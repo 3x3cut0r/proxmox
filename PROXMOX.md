@@ -67,7 +67,7 @@ systemctl restart chronyd
 ### 2.4 setup dns server <a name="dns"></a>  
 **change /etc/resolv.conf**
 ```shell
-search fritz.box
+search local.net
 nameserver 1.1.1.1
 nameserver 1.0.0.1
 nameserver 2606:4700:4700::1111
