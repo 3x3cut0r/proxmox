@@ -28,6 +28,7 @@ all about proxmox installation and configuration
 
 ### 2.1 first steps <a name="first_steps"></a>  
 **install pve-no-subscription repository**
+**skip this step if you have an enterprise subscription**
 ```shell
 rm -f /etc/apt/sources.list.d/pve-enterprise.list
 wget https://raw.githubusercontent.com/3x3cut0r/proxmox/main/apt/sources.list.d/pve-no-subscription.list -O /etc/apt/sources.list.d/pve-no-subscription.list
