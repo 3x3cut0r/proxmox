@@ -18,16 +18,16 @@ pihole installation inside a unprivileged LXC-Container
 # 1. create LXC-Container <a name="lxc-container"></a>  
 **create a LXC-Container:**  
 - unprivileged = 1  
-**- nesting = 1**  
-**- template = debian-11-standard**  
-**- disk-space = 30GiB**  
-**- cpu-cores = 1**  
-**- ram = 512 MiB**  
-**- swap = 0 MiB**  
-**- IPv4 = static (set ip + gw)**  
-**- IPv6 = SLAAC**  
-**- dns-domain = local.lan**  
-**- dns-server = 1.1.1.1**  
+- nesting = 1  
+- template = debian-11-standard  
+- disk-space = 30GiB  
+- cpu-cores = 1  
+- ram = 512 MiB  
+- swap = 0 MiB  
+- IPv4 = static (set ip + gw)  
+- IPv6 = SLAAC  
+- dns-domain = local.lan  
+- dns-server = 1.1.1.1  
 
 # 2. installation <a name="installation"></a>  
 
