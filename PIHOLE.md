@@ -8,6 +8,8 @@ pihole installation inside a unprivileged LXC-Container
 2. [installation](#installation)  
   2.1 [prerequisites](#prerequisites)  
   2.2 [installation](#installation)  
+  2.3 [change pihole password](#pihole_password)  
+  2.4 [cloudflare DNS over HTTPS](#cloudflare_doh)  
 3. [usage](#usage)  
   3.1 [browse](#browse)  
 4. [errors](#errors)  
@@ -41,6 +43,36 @@ apt install curl -y
 ### 2.2 installation <a name="installation"></a>  
 ```shell
 curl -sSL https://install.pi-hole.net | bash
+
+```
+
+### 2.3 change pihole password <a name="pihole_password"></a>  
+```shell
+pihole -a -p
+
+```
+
+### 2.4 cloudflare DNS over HTTPS <a name="cloudflare_doh"></a>  
+```shell
+cd /usr/local/bin
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+mv cloudflared-linux-amd64 cloudflared
+sudo useradd -s /usr/sbin/nologin -r -M cloudflared
+echo -e "# Commandline args for cloudflared" > /etc/default/cloudflared
+echo -e "CLOUDFLARED_OPTS=--port 5053 --upstream https://1.1.1.1/dns-query --upstream https://1.0.0.1/dns-query" >> /etc/default/cloudflared
+sudo chmod +x /usr/local/bin/cloudflared
+sudo chown cloudflared:cloudflared /etc/default/cloudflared
+sudo chown cloudflared:cloudflared /usr/local/bin/cloudflared
+wget https://raw.githubusercontent.com/3x3cut0r/proxmox/main/lxc/pihole/lib/systemd/system/cloudflared.service -O /lib/systemd/system/cloudflared.service
+sudo systemctl enable cloudflared
+sudo systemctl start cloudflared
+sudo systemctl status cloudflared
+
+```
+
+**test dns**  
+```shell
+dig @127.0.0.1 -p 5053 google.com
 
 ```
 
