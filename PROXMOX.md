@@ -4,6 +4,8 @@ all about proxmox installation and configuration
 
 ## Index
 
+0. [prerequisites](#prerequisites)  
+  0.1 [BIOS options](#bios)  
 1. [installation](#installation)  
 2. [configuration (console)](#configuration)  
   2.1 [first steps](#first_steps)  
@@ -12,6 +14,7 @@ all about proxmox installation and configuration
   2.4 [setup dns server](#dns)  
   2.5 [remove subscription notice](#subscription_notice)  
   2.6 [install kernel-headers](#kernel-headers)  
+  2.7 [enable iommu for pcie passthrough](#iommu)  
 3. [usage](#usage)  
   3.1 [browse](#browse)  
 4. [errors](#errors)  
@@ -20,7 +23,7 @@ all about proxmox installation and configuration
   4.3 [sound errors](#error_sound)  
   4.4 [zfs errors](#error_zfs)  
   4.5 [kvm: exiting hardware virtualization](#error_kvm)  
-
+  4.100 [(LXC) slow boot times](#lxc_slow_boot)  
 \# [Find Me](#findme)  
 \# [License](#license)  
 
@@ -102,6 +105,34 @@ apt install pve-headers-5.15 pve-headers-5.15.5-1-pve
 
 ```
 
+### 2.7 enable iommu for pcie passthrough <a name="iommu"></a>  
+**see full instruction on [proxmox.com/wiki](https://pve.proxmox.com/wiki/Pci_passthrough)**
+**/etc/default/grub**
+```shell
+...
+# for intel cpu
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
+
+# for amd cpu
+GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on"
+
+```
+**update system boot**
+```shell
+proxmox-boot-tool refresh
+
+```
+**check if iommu is enabled**
+```shell
+dmesg | grep -e DMAR -e IOMMU
+
+[    0.314908] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
+[    0.316649] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
+[    0.324114] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 counters/bank).
+[    5.052188] AMD-Vi: AMD IOMMUv2 driver by Joerg Roedel <jroedel@suse.de>
+
+```
+
 # 4. errors <a name="errors"></a>  
 
 ### 4.1 network won't start after reboot <a name="error_network"></a>  
@@ -171,6 +202,9 @@ systemctl disable zfs-import-scan
 apt install pve-kernel-5.15 pve-kernel-5.15.5-1-pve pve-headers-5.15 pve-headers-5.15.5-1-pve
 
 ```
+
+### 4.100 (LXC) slow boot times <a name="lxc_slow_boot"></a>  
+**if your LXC Container boots only in about 4-5 mins -> switch IPv6 from DHCP to SLAAC**
 
 ### Find Me <a name="findme"></a>
 
