@@ -17,7 +17,7 @@ pihole installation inside a unprivileged LXC-Container
 
 # 1. create LXC-Container <a name="lxc-container"></a>  
 **create a LXC-Container:**  
-**- unprivileged = 1**  
+- unprivileged = 1  
 **- nesting = 1**  
 **- template = debian-11-standard**  
 **- disk-space = 30GiB**  
