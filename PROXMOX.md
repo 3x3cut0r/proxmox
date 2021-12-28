@@ -106,32 +106,14 @@ apt install pve-headers-5.15 pve-headers-5.15.5-1-pve
 ```
 
 ### 2.7 enable iommu for pcie passthrough <a name="iommu"></a>  
-**see full instruction on [proxmox.com/wiki](https://pve.proxmox.com/wiki/Pci_passthrough)**
-**/etc/default/grub**
-```shell
-...
-# for intel cpu
-GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
+**follow instructions on [proxmox.com/wiki](https://pve.proxmox.com/wiki/Pci_passthrough)**
+**and [thomas-krenn.com](https://www.thomas-krenn.com/de/wiki/Proxmox_PCIe_Passthrough_aktivieren)**
 
-# for amd cpu
-GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on"
+# 3. usage <a name="usage"></a>  
 
-```
-**update system boot**
-```shell
-proxmox-boot-tool refresh
-
-```
-**check if iommu is enabled**
-```shell
-dmesg | grep -e DMAR -e IOMMU
-
-[    0.314908] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
-[    0.316649] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-[    0.324114] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 counters/bank).
-[    5.052188] AMD-Vi: AMD IOMMUv2 driver by Joerg Roedel <jroedel@suse.de>
-
-```
+### 3.1 browse <a name="browse"></a>  
+**Backend**  
+[https://proxmox.ip:8006/](https://proxmox.ip:8006)  
 
 # 4. errors <a name="errors"></a>  
 
