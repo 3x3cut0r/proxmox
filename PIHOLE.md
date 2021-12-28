@@ -10,10 +10,12 @@ pihole installation inside a unprivileged LXC-Container
   2.2 [installation](#installation)  
   2.3 [change pihole password](#pihole_password)  
   2.4 [cloudflare DNS over HTTPS](#cloudflare_doh)  
-3. [usage](#usage)  
-  3.1 [browse](#browse)  
-4. [errors](#errors)  
-  4.1 [installation error](#error_installation)  
+3. [configuration](#configuration)  
+  3.1 [add lists](#adlists)  
+4. [usage](#usage)  
+  4.1 [browse](#browse)  
+5. [errors](#errors)  
+  5.1 [installation error](#error_installation)  
 \# [Find Me](#findme)  
 \# [License](#license)  
 
@@ -43,6 +45,7 @@ apt install curl -y
 ### 2.2 installation <a name="installation"></a>  
 ```shell
 curl -sSL https://install.pi-hole.net | bash
+chown -R pihole:pihole /etc/pihole
 
 ```
 
@@ -76,15 +79,52 @@ dig @127.0.0.1 -p 5053 google.com
 
 ```
 
-# 3. usage <a name="usage"></a>  
+# 3. configuration <a name="configuration"></a>  
+**list tables**  
+```shell
+sudo sqlite3 /etc/pihole/gravity.db .tables
 
-### 3.1 browse <a name="browse"></a>  
+```
+
+### 3.1 add lists <a name="add_lists"></a>  
+**adlists from [blocklistproject](https://github.com/blocklistproject/Lists)**  
+```shell
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/abuse.txt', 1, 'abuse (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/ads.txt', 1, 'ads (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/basic.txt', 1, 'basic (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/crypto.txt', 1, 'crypto (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/everything.txt', 1, 'everything (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/facebook.txt', 1, 'facebook (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/fraud.txt', 1, 'fraud (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/gambling.txt', 1, 'gambling (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/malware.txt', 1, 'malware (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt', 1, 'phishing (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/piracy.txt', 1, 'piracy (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt', 1, 'porn (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/ransomware.txt', 1, 'ransomware (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/redirect.txt', 1, 'redirect (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt', 1, 'scam (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/smart-tv.txt', 1, 'smart-tv (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/tiktok.txt', 1, 'tiktok (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/torrent.txt', 1, 'torrent (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/tracking.txt', 1, 'tracking (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/twitter.txt', 1, 'twitter (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/vaping.txt', 1, 'vaping (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/whatsapp.txt', 1, 'whatsapp (blp)');"
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO adlist (address, enabled, comment) VALUES ('https://raw.githubusercontent.com/blocklistproject/Lists/master/youtube.txt', 1, 'youtube (blp)');"
+pihole -g
+
+```
+
+# 4. usage <a name="usage"></a>  
+
+### 4.1 browse <a name="browse"></a>  
 **Backend**  
 [https://pihole.ip/admin](https://pihole.ip/admin)  
 
-# 4. errors <a name="errors"></a>  
+# 5. errors <a name="errors"></a>  
 
-### 4.1 installation error <a name="error_installation"></a>  
+### 5.1 installation error <a name="error_installation"></a>  
 **[✗] Unable to build gravity tree in /etc/pihole/gravity.db_temp**  
 **Error: no such table: main.gravity**  
 ```shell
