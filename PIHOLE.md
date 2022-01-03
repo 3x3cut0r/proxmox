@@ -139,6 +139,12 @@ sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO 'group' (id, enabled, name, des
 
 ```
 
+**groups for 3x3cut0r's lists**  
+```shell
+sudo sqlite3 /etc/pihole/gravity.db "INSERT INTO 'group' (id, enabled, name, description) VALUES (330, 1, 'Filehoster Whitelists', '3x3cut0r');"
+
+```
+
 ### 3.2 add lists <a name="add_lists"></a>  
 **adlists from [blocklistproject](https://github.com/blocklistproject/Lists)**  
 ```shell
