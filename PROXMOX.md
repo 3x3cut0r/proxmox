@@ -23,6 +23,7 @@ all about proxmox installation and configuration
   4.3 [sound errors](#error_sound)  
   4.4 [zfs errors](#error_zfs)  
   4.5 [kvm: exiting hardware virtualization](#error_kvm)  
+  4.6 [no network after update](#error_network_update)  
   4.100 [(LXC) slow boot times](#lxc_slow_boot)  
 \# [Find Me](#findme)  
 \# [License](#license)  
@@ -182,6 +183,13 @@ systemctl disable zfs-import-scan
 **install latest kernel + kernel-headers**
 ```shell
 apt install pve-kernel-5.15 pve-kernel-5.15.5-1-pve pve-headers-5.15 pve-headers-5.15.5-1-pve
+
+```
+
+### 4.6 no network after update <a name="error_network_update"></a>  
+**you probably update your kernel but forgett to install kernel-headers**
+```shell
+apt install pve-kernel-5.15.12-1-pve
 
 ```
 
