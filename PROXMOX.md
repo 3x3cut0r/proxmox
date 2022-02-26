@@ -14,7 +14,8 @@ all about proxmox installation and configuration
   2.4 [setup dns server](#dns)  
   2.5 [remove subscription notice](#subscription_notice)  
   2.6 [install kernel-headers](#kernel-headers)  
-  2.7 [enable iommu for pcie passthrough](#iommu)  
+  2.7 [change kernel boot version](#kernel-boot)  
+  2.8 [enable iommu for pcie passthrough](#iommu)  
 3. [usage](#usage)  
   3.1 [browse](#browse)  
 4. [errors](#errors)  
@@ -106,7 +107,16 @@ apt install pve-headers-5.15 pve-headers-5.15.5-1-pve
 
 ```
 
-### 2.7 enable iommu for pcie passthrough <a name="iommu"></a>  
+### 2.7 change kernel boot version <a name="kernel-boot"></a>  
+**change which kernel should boot**
+```shell
+proxmox-boot-tool kernel list
+proxmox-boot-tool kernel add 5.15.5-1-pve
+proxmox-boot-tool refresh
+
+```
+
+### 2.8 enable iommu for pcie passthrough <a name="iommu"></a>  
 **follow instructions on [proxmox.com/wiki](https://pve.proxmox.com/wiki/Pci_passthrough)**
 **and [thomas-krenn.com](https://www.thomas-krenn.com/de/wiki/Proxmox_PCIe_Passthrough_aktivieren)**
 
