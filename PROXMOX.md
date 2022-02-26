@@ -187,7 +187,7 @@ apt install pve-kernel-5.15 pve-kernel-5.15.5-1-pve pve-headers-5.15 pve-headers
 ```
 
 ### 4.6 no network after update <a name="error_network_update"></a>  
-**you probably update your kernel but forgett to install kernel-headers**
+**you probably updated your kernel but forgot to install kernel-headers**
 ```shell
 apt install pve-kernel-5.15.12-1-pve
 
