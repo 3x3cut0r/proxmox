@@ -154,7 +154,7 @@ all about OPNsense installation and configuration
  - Enabled: Check  
  - Common Name: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
  - Description: LE Certificate
- - Alt Names: < leave blank > (if not: only subdomains from your CN are excepted!)  
+ - Alt Names: < you can add more domains or subdomains here >  
  - ACME Account: <your account, created on point 2. >  
  - Challenge Type: <your challenge type, created on point 3. >  
  - Auto Renewal: Check  
