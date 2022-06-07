@@ -11,10 +11,17 @@ all about OPNsense installation and configuration
     2.1 [modem configuration (DrayTek Vigor 165)](#21_modem_configuration)  
     2.2 [OPNsense configuration (PPPoE)](#22_opnsense_configuration)  
 3. [Dynamic DNS (DuckDNS)](#ddns)  
+    3.1 [DuckDNS account](#31_duckdns_account)  
+    3.2 [install os-ddclient plugin](#32_install_plugin)  
+    3.3 [configure os-ddclient plugin](#33_configure_plugin)  
+    3.4 [ddclient via console (optional)](#34_ddclient_console)  
+    3.5 [disable rebind attack warning](#35_rebind_attack)  
+4. [Lets Encrypt Certificate via ACME-Client (SSL/HTTPS)](#le)  
+    4.1 [install os-acme-client plugin](#41_install_plugin)  
+    4.2 [configure os-acme-client plugin](#42_configure_plugin)  
 
 \# [Find Me](#findme)  
 \# [License](#license)  
-
 
 # 0. prerequisites <a name="prerequisites"></a>  
 
@@ -58,21 +65,29 @@ all about OPNsense installation and configuration
     - Send IPv6 prefix hint: CHECK
     - Use IPv4 connectivity: CHECK
 
-# 2. Dynamic DNS (DuckDNS) <a name="ddns"></a>
+# 3. Dynamic DNS (DuckDNS) <a name="ddns"></a>
+
+### 3.1 DuckDNS account <a name="31_duckdns_account"></a>  
 - create an account or login into your [DuckDNS](https://www.duckdns.org/) account  
 - create a token and add a domain to your account (e.g.: http://3x3cut0r.duckdns.org)  
 - copy your token into your clipboard  
+
+### 3.2 install os-ddclient plugin <a name="32_ddclient_plugin"></a>  
 - Settings / Firmware / Plugins: install os-ddclient  
-- Services / Dynamic DNS / Settings / Add  
+- reload site (F5) to see the plugin under Services  
+
+### 3.3 configure os-ddclient plugin <a name="32_configure_plugin"></a>  
+- Services / Dynamic DNS / Settings -> Add:  
  - Service: DuckDNS  
  - Username: <your DuckDNS E-Mail>  
  - Password: <your DuckDNS Token>  
- - Hostname: <your DuckDNS domain (e.g.: http://3x3cut0r.duckdns.org)>  
+ - Hostname: <your DuckDNS domain (e.g.: http://3x3cut0r.duckdns.org) >  
  - Check ip method: Interface  
  - Force SSL: Check  
  - Interface to monitor: WAN
 
-**if WAN ist not working:**  
+### 3.4 ddclient via console (optional) <a name="34_ddclient_console"></a>  
+**if WAN as 'Check ip method' is not working:**  
 - ssh to your OPNsense and open a shell
  - change /usr/local/etc/ddclient.conf to: (if: WAN -> pppoe0)
 
@@ -89,12 +104,63 @@ all about OPNsense installation and configuration
  3x3cut0r.duckdns.org
 
  ```  
-- **you need to rechange the ddclient.conf via shell after changing anything via GUI**  
 
+**hints:**  
+- **you need to rechange the ddclient.conf via shell after changing anything via GUI**  
+- **you can do more with the console as with the GUI because not all options are integrated with the GUI (like if=web as update method for ddnss.de for example)**  
+
+
+### 3.5 disable rebind attack warning <a name="35_rebind_attack"></a>  
 **to prevent ERROR: rebind attack dynamic dns:**  
 - System / Settings / Administration / Alternate Hostnames:
- - enter your ddns domains (e.g.: 3x3cut0r.duckdns.org, space-separated list)
+ - enter your ddns domains (e.g.: '3x3cut0r.duckdns.org' - space-separated list)
 
+# 4. Lets Encrypt Certificate via ACME-Client (SSL/HTTPS) <a name="le"></a>
+
+### 4.1 install os-acme-client plugin <a name="41_install_plugin"></a>  
+- Settings / Firmware / Plugins: install os-acme-client  
+- reload site (F5) to see the plugin under Services  
+
+### 4.2 configure os-acme-client plugin <a name="42_configure_plugin"></a>  
+1. Services / ACME Client / **Settings**:  
+ - **Enable Plugin: Check**  
+ - Enable Auto Renewal: Check  
+2. Services / ACME Client / Accounts / **Accounts -> Add**:  
+ - Name: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
+ - Description: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
+ - E-Mail Address: <your email address>  
+ - ACME CA: Let's Encrypt (default)  
+ - Save  
+3. Services / ACME Client / Challenge Types / **Challenge Types -> Add**:  
+ - **Challenge HTTP-01: (single Domain)**  
+ - (for other Challenges see [github.com/opnsense/plugins/pull/66](https://github.com/opnsense/plugins/pull/66))  
+ - Name: LE HTTP-01 Challenge
+ - Description: LE HTTP-01 Challenge  
+ - Challenge Type: HTTP-01  
+ - HTTP Service: OPNsense Web Service (automatic port forward)  
+ - IP Auto-Discovery: Check  
+ - Interface: WAN  
+ - IP Addresses: < leave blank >  
+ - Save
+4. Services / ACME Client / Certificates / **Certificates -> Add**:  
+ - Enabled: Check  
+ - Common Name: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
+ - Description: LE Certificate
+ - Alt Names: < leave blank > (if not: only subdomains from your CN are excepted!)  
+ - ACME Account: <your account, created on point 2. >  
+ - Challenge Type: <your challenge type, created on point 3. >  
+ - Auto Renewal: Check  
+ - Renewal Interval: **30**  
+ - Key Length: 4096 bit (default)  
+ - **Issue/Renew All Certificates**  
+5. Check if your Certifice is issued under Services / ACME Client / Log Files:  
+ ```shell
+AcmeClient: imported ACME X.509 certificate: 3x3cut0r.duckdns.org
+AcmeClient: imprting ACME CA: R3
+AcmeClient: successfully issued/renewed certificate: 3x3cut0r.duckdns.org
+...
+
+ ```
 
 ### Find Me <a name="findme"></a>
 
