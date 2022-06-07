@@ -115,13 +115,15 @@ all about OPNsense installation and configuration
 - System / Settings / Administration / Alternate Hostnames:
  - enter your ddns domains (e.g.: '3x3cut0r.duckdns.org' - space-separated list)
 
+**DONE**  
+
 # 4. Lets Encrypt Certificate via ACME-Client (SSL/HTTPS) <a name="le"></a>
 
 ### 4.1 install os-acme-client plugin <a name="41_install_plugin"></a>  
 - Settings / Firmware / Plugins: install os-acme-client  
 - reload site (F5) to see the plugin under Services  
 
-### 4.2 configure os-acme-client plugin <a name="42_configure_plugin"></a>  
+### 4.2 configure os-acme-client plugin (HTTP-01 - single domain)<a name="42_configure_plugin"></a>  
 1. Services / ACME Client / **Settings**:  
  - **Enable Plugin: Check**  
  - Enable Auto Renewal: Check  
@@ -152,15 +154,29 @@ all about OPNsense installation and configuration
  - Auto Renewal: Check  
  - Renewal Interval: **30**  
  - Key Length: 4096 bit (default)  
+ - Save  
+5. Services / ACME Client / Automations / **Automations -> Add**:  
+ - Enabled: Check  
+ - Name: Restart OPNsense Web UI
+ - Description: Restart OPNsense Web UI
+ - Run Command: Restart OPNsense Web UI
+ - Save
+6. Services / ACME Client / Certificates / **Certificates**:  
  - **Issue/Renew All Certificates**  
-5. Check if your Certifice is issued under Services / ACME Client / Log Files:  
- ```shell
+7. Check if your Certifice is issued under Services / ACME Client / Log Files:  
+
+```shell
 AcmeClient: imported ACME X.509 certificate: 3x3cut0r.duckdns.org
 AcmeClient: imprting ACME CA: R3
 AcmeClient: successfully issued/renewed certificate: 3x3cut0r.duckdns.org
 ...
 
- ```
+```
+8. **System / Settings / Administration / SSL Certificate:**
+ - SSL Certificate: < select your generated ACME Client Certificate >  
+ - Save  
+9. **DONE**  
+
 
 ### Find Me <a name="findme"></a>
 
