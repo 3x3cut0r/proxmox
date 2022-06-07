@@ -128,8 +128,8 @@ all about OPNsense installation and configuration
  - **Enable Plugin: Check**  
  - Enable Auto Renewal: Check  
 2. Services / ACME Client / Accounts / **Accounts -> Add**:  
- - Name: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
- - Description: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
+ - Name: <name of your email address >  
+ - Description: <name of your email address >  
  - E-Mail Address: <your email address>  
  - ACME CA: Let's Encrypt (default)  
  - Save  
@@ -143,8 +143,14 @@ all about OPNsense installation and configuration
  - IP Auto-Discovery: Check  
  - Interface: WAN  
  - IP Addresses: < leave blank >  
+ - Save  
+4. Services / ACME Client / Automations / **Automations -> Add**:  
+ - Enabled: Check  
+ - Name: Restart OPNsense Web UI
+ - Description: Restart OPNsense Web UI
+ - Run Command: Restart OPNsense Web UI
  - Save
-4. Services / ACME Client / Certificates / **Certificates -> Add**:  
+5. Services / ACME Client / Certificates / **Certificates -> Add**:  
  - Enabled: Check  
  - Common Name: <name of your domain (e.g.: 3x3cut0r.duckdns.org) >  
  - Description: LE Certificate
@@ -154,6 +160,9 @@ all about OPNsense installation and configuration
  - Auto Renewal: Check  
  - Renewal Interval: **30**  
  - Key Length: 4096 bit (default)  
+ - OCSP Must Staple: Unchecked
+ - Automations: < your automation created in 4. >  
+ - DNS Alias Mode: Not using DNS alias mode  
  - Save  
 5. Services / ACME Client / Automations / **Automations -> Add**:  
  - Enabled: Check  
