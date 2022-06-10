@@ -7,6 +7,7 @@ all about OPNsense installation and configuration
 0. [prerequisites](#prerequisites)  
     0.1 [VM installation (Proxmox)](#01_vm_installation)  
 1. [OPNsense defaults](#opnsense_defaults)  
+    1.9 [GeoIP blocking](#19_geoip_blocking)
 2. [VDSL2 configuration](#vdsl2_configuration)  
     2.1 [modem configuration (DrayTek Vigor 165)](#21_modem_configuration)  
     2.2 [OPNsense configuration (PPPoE)](#22_opnsense_configuration)  
@@ -28,8 +29,10 @@ all about OPNsense installation and configuration
 ### 0.1 VM installation (Proxmox) <a name="01_vm_installation"></a>  
 **see VM installation in the [PROXMOX.md](https://github.com/3x3cut0r/proxmox/blob/main/PROXMOX.md)**  
 
-# 1. OPNsense defaults <a name="opnsense_defaults"></a>
-**coming soon**  
+# 1. OPNsense defaults <a name="opnsense_defaults"></a>  
+
+### 1.9 GeoIP blocking <a name="19_geoip_blocking"></a>  
+**for GeoIP blocking just follow the instructions [here](https://docs.opnsense.org/manual/how-tos/maxmind_geo_ip.html)**  
 
 # 2. VDSL2 configuration <a name="vdsl2_configuration"></a>
 
