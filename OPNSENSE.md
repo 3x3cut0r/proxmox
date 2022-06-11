@@ -32,7 +32,9 @@ all about OPNsense installation and configuration
 # 1. OPNsense defaults <a name="opnsense_defaults"></a>  
 
 ### 1.9 GeoIP blocking <a name="19_geoip_blocking"></a>  
-**for GeoIP blocking just follow the instructions [here](https://docs.opnsense.org/manual/how-tos/maxmind_geo_ip.html)**  
+- for GeoIP blocking just follow the instructions [here](https://docs.opnsense.org/manual/how-tos/maxmind_geo_ip.html)  
+- create an alias "GeoIP" for all countries you want to block
+- create a rule to block this alias "GeoIP" on your WAN interface
 
 # 2. VDSL2 configuration <a name="vdsl2_configuration"></a>
 
