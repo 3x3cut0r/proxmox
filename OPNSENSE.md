@@ -11,15 +11,18 @@ all about OPNsense installation and configuration
 2. [VDSL2 configuration](#vdsl2_configuration)  
     2.1 [modem configuration (DrayTek Vigor 165)](#21_modem_configuration)  
     2.2 [OPNsense configuration (PPPoE)](#22_opnsense_configuration)  
-3. [Dynamic DNS (DuckDNS)](#ddns)  
-    3.1 [DuckDNS account](#31_duckdns_account)  
-    3.2 [install os-ddclient plugin](#32_install_plugin)  
-    3.3 [configure os-ddclient plugin](#33_configure_plugin)  
-    3.4 [ddclient via console (optional)](#34_ddclient_console)  
-    3.5 [disable rebind attack warning](#35_rebind_attack)  
-4. [Lets Encrypt Certificate via ACME-Client (SSL/HTTPS)](#le)  
-    4.1 [install os-acme-client plugin](#41_install_plugin)  
-    4.2 [configure os-acme-client plugin](#42_configure_plugin)  
+3. [VoIP (FritzBox + 1und1)](#voip)  
+    3.1 [OPNsense configuration](#31_opnsense_configuration)  
+    3.2 [FritzBox configuration](#32_fritzbox_configuration)  
+4. [Dynamic DNS (DuckDNS)](#ddns)  
+    4.1 [DuckDNS account](#41_duckdns_account)  
+    4.2 [install os-ddclient plugin](#42_install_plugin)  
+    4.3 [configure os-ddclient plugin](#43_configure_plugin)  
+    4.4 [ddclient via console (optional)](#44_ddclient_console)  
+    4.5 [disable rebind attack warning](#45_rebind_attack)  
+5. [Lets Encrypt Certificate via ACME-Client (SSL/HTTPS)](#le)  
+    5.1 [install os-acme-client plugin](#51_install_plugin)  
+    5.2 [configure os-acme-client plugin](#52_configure_plugin)  
 
 \# [Find Me](#findme)  
 \# [License](#license)  
@@ -70,18 +73,86 @@ all about OPNsense installation and configuration
     - Send IPv6 prefix hint: CHECK
     - Use IPv4 connectivity: CHECK
 
-# 3. Dynamic DNS (DuckDNS) <a name="ddns"></a>
+# 3. VoIP (FritzBox - 1und1) <a name="voip"></a>
 
-### 3.1 DuckDNS account <a name="31_duckdns_account"></a>  
+### 3.1 OPNsense configuration <a name="31_opnsense_configuration"></a>  
+- Firewall / Aliases -> add:  
+ - Name: FritzBox  
+ - Type: Host(s)  
+ - Content: <LAN IP of your FritzBox>  
+ - Description: FritzBox  
+- Firewall / Aliases -> add:  
+ - Name: 1und1_SIP_Server  
+ - Type: Host(s)  
+ - Content: 212.227.124.129, 212.227.124.130  
+ - Description: 1und1 SIP Server  
+- Firewall / Aliases -> add:  
+ - Name: 1und1_VoIP_Ports  
+ - Type: Port(s)  
+ - Content: 5060:5061, 7078:7109  
+ - Description: 1und1 VoIP Port Range  
+- Firewall / NAT / Outbound:  
+ - set to Hybrid outbound NAT rule generation  
+- Firewall / NAT / Outbound -> add:  
+ - Interface: WAN  
+ - TCP/IP Version: IPv4  
+ - Protocol: UDP  
+ - Source address: FritzBox (Alias)  
+ - Source port: any  
+ - Destination address: any  
+ - Destination port: any  
+ - Translation / target: WAN address  
+ - Static-port: check  
+ - Description: VoIP FritzBox  
+- Firewall / NAT / Outbound -> add:  
+ - Interface: WAN  
+ - TCP/IP Version: IPv4  
+ - Protocol: UDP  
+ - Source address: 1und1_SIP_Server (Alias)  
+ - Source port: SIP (default Alias for 5060)  
+ - Destination address: This Firewall (default Alias)  
+ - Destination port: any  
+ - Translation / target: FritzBox (Alias)  
+ - Translation / port: 5060 (SIP)  
+ - Static-port: uncheck  
+ - Description: 1&1 SIP Server to FritzBox7590  
+- Firewall / Rules / LAN -> add:  
+ - Action: Pass  
+ - Quick: check  
+ - Interface: LAN  
+ - Direction: in  
+ - TCP/IP Version: IPv4  
+ - Protocol: TCP/UDP  
+ - Source: FritzBox (Alias)  
+ - Source port range: 1und1_VoIP_Ports (Alias) <-> 1und1_VoIP_Ports (Alias)  
+ - Destination: any  
+ - Destination port range: any <-> any  
+ - Description: VoIP FritzBox  
+- Firewall -> Settings -> Advanced:
+ - Miscellaneous / Firewall Optimization: conservative  
+
+### 3.3 FritzBox configuration <a name="32_fritzbox_configuration"></a>  
+- Telephony / Telephony Numbers -> add (optional):  
+ - Registrar: sip.1und1.de  
+ - STUN/Proxy: stun.1und1.de  
+ - Contact internet telephony: Only via IPv4  
+ - Transport Protocol: Automatic  
+- Telephony / Telephony Numbers / Line Settings:  
+ - Telephony Connection / Kep port sharing of the internet router enabled for telephony: check  
+ - Telephony Connection / Keep port forwarding enabled every: 30 sec.  
+
+# 4. Dynamic DNS (DuckDNS) <a name="ddns"></a>
+
+### 4.1 DuckDNS account <a name="41_duckdns_account"></a>  
 - create an account or login into your [DuckDNS](https://www.duckdns.org/) account  
 - create a token and add a domain to your account (e.g.: http://3x3cut0r.duckdns.org)  
 - copy your token into your clipboard  
 
-### 3.2 install os-ddclient plugin <a name="32_ddclient_plugin"></a>  
+### 4.2 install os-ddclient plugin <a name="42_ddclient_plugin"></a>  
 - Settings / Firmware / Plugins: install os-ddclient  
 - reload site (F5) to see the plugin under Services  
 
-### 3.3 configure os-ddclient plugin <a name="32_configure_plugin"></a>  
+### 4.3 configure os-ddclient plugin <a name="43_configure_plugin"></a>  
 - Services / Dynamic DNS / Settings -> Add:  
  - Service: DuckDNS  
  - Username: <your DuckDNS E-Mail>  
@@ -91,7 +162,7 @@ all about OPNsense installation and configuration
  - Force SSL: Check  
  - Interface to monitor: WAN
 
-### 3.4 ddclient via console (optional) <a name="34_ddclient_console"></a>  
+### 4.4 ddclient via console (optional) <a name="44_ddclient_console"></a>  
 **if WAN as 'Check ip method' is not working:**  
 - ssh to your OPNsense and open a shell
  - change /usr/local/etc/ddclient.conf to: (if: WAN -> pppoe0)
@@ -115,20 +186,20 @@ all about OPNsense installation and configuration
 - **you can do more with the console as with the GUI because not all options are integrated with the GUI (like if=web as update method for ddnss.de for example)**  
 
 
-### 3.5 disable rebind attack warning <a name="35_rebind_attack"></a>  
+### 4.5 disable rebind attack warning <a name="45_rebind_attack"></a>  
 **to prevent ERROR: rebind attack dynamic dns:**  
 - System / Settings / Administration / Alternate Hostnames:
  - enter your ddns domains (e.g.: '3x3cut0r.duckdns.org' - space-separated list)
 
 **DONE**  
 
-# 4. Lets Encrypt Certificate via ACME-Client (SSL/HTTPS) <a name="le"></a>
+# 5. Lets Encrypt Certificate via ACME-Client (SSL/HTTPS) <a name="le"></a>
 
-### 4.1 install os-acme-client plugin <a name="41_install_plugin"></a>  
+### 5.1 install os-acme-client plugin <a name="51_install_plugin"></a>  
 - Settings / Firmware / Plugins: install os-acme-client  
 - reload site (F5) to see the plugin under Services  
 
-### 4.2 configure os-acme-client plugin (HTTP-01 - single domain)<a name="42_configure_plugin"></a>  
+### 5.2 configure os-acme-client plugin (HTTP-01 - single domain)<a name="52_configure_plugin"></a>  
 1. Services / ACME Client / **Settings**:  
  - **Enable Plugin: Check**  
  - Enable Auto Renewal: Check  
