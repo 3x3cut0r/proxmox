@@ -87,6 +87,8 @@ nameserver 2606:4700:4700::1111
 ```
 
 ### 2.5 remove subscription notice <a name="subscription_notice"></a>  
+**need to be done after every update from pve!**  
+
 **remove the notice and restart the proxmox service**
 ```shell
 cp /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak
