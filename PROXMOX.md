@@ -26,6 +26,8 @@ all about proxmox installation and configuration
   4.5 [kvm: exiting hardware virtualization](#error_kvm)  
   4.6 [no network after update](#error_network_update)  
   4.100 [(LXC) slow boot times](#lxc_slow_boot)  
+5. [update pve](#update_pve)  
+
 \# [Find Me](#findme)  
 \# [License](#license)  
 
@@ -105,7 +107,7 @@ systemctl restart pveproxy.service
 ### 2.6 install kernel-headers <a name="kernel-headers"></a>  
 **the kernel-headers should match with your kernel version!!!**
 ```shell
-apt install pve-headers-5.15 pve-headers-5.15.5-1-pve
+apt install pve-headers-5.15 pve-headers-5.15.35-2-pve
 
 ```
 
@@ -113,7 +115,8 @@ apt install pve-headers-5.15 pve-headers-5.15.5-1-pve
 **change which kernel should boot**
 ```shell
 proxmox-boot-tool kernel list
-proxmox-boot-tool kernel add 5.15.5-1-pve
+proxmox-boot-tool kernel add 5.15.35-2-pve
+# proxmox-boot-tool kernel remove <old-kernel-version>-pve
 proxmox-boot-tool refresh
 
 ```
@@ -194,7 +197,7 @@ systemctl disable zfs-import-scan
 ### 4.5 kvm: exiting hardware virtualization <a name="error_kvm"></a>  
 **install latest kernel + kernel-headers**
 ```shell
-apt install pve-kernel-5.15 pve-kernel-5.15.5-1-pve pve-headers-5.15 pve-headers-5.15.5-1-pve
+apt install pve-kernel-5.15 pve-kernel-5.15.35-2-pve pve-headers-5.15.35-2-pve pve-headrs-5.15
 
 ```
 
@@ -207,6 +210,32 @@ apt install pve-kernel-5.15.12-1-pve
 
 ### 4.100 (LXC) slow boot times <a name="lxc_slow_boot"></a>  
 **if your LXC Container boots only in about 4-5 mins -> switch IPv6 from DHCP to SLAAC**
+
+# 5. update pve <a name="update_pve"></a>  
+**DO NOT just simple apt update && apt upgrade -y**  
+**you will run into error 4.6! if the kernel will be updated!**  
+**you need to install the new pve-headers before updating your kernel!**  
+```shell
+apt update && apt upgrade  
+# abort here with CTRL-C
+# check if the kernel will be updated
+# remember the new kernel version
+# apt install pve-headers-<enter new kernel version here>-pve
+apt install pve-headers-5.15.35-2-pve
+apt update && apt upgrade -y
+# now you need to change the kernel boot version (see 2.7)
+proxmox-boot-tool kernel list
+# check which kernel is listet under Manually selected kernels:
+proxmox-boot-tool kernel add <new-kernel-version>-pve
+# for example:
+#  proxmox-boot-tool kernel add 5.15.35-2-pve
+proxmox-boot-tool kernel remove <old-kernel-version>-pve
+# for example:
+#  proxmox-boot-tool kernel remove 5.15.35-1-pve
+proxmox-boot-tool refresh
+
+```
+
 
 ### Find Me <a name="findme"></a>
 
