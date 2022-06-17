@@ -202,14 +202,20 @@ apt install pve-kernel-5.15 pve-kernel-5.15.35-2-pve pve-headers-5.15.35-2-pve p
 ```
 
 ### 4.6 no network after update <a name="error_network_update"></a>  
-**you probably updated your kernel but forgot to install kernel-headers**
+**you probably updated your kernel but forgot to install kernel-headers**  
 ```shell
 apt install pve-kernel-5.15.12-1-pve
 
 ```
+### 4.99 prevent /etc/network/interfaces inside VM/LXC from overwrite <a name="interfaces_overwrite"></a>  
+**if your /etc/network/interfaces inside a VM/LXC gets overwritten by proxmox, do inside your VM/LXC:**  
+```shell
+touch /etc/network/.pve-ignore.interfaces
+
+```
 
 ### 4.100 (LXC) slow boot times <a name="lxc_slow_boot"></a>  
-**if your LXC Container boots only in about 4-5 mins -> switch IPv6 from DHCP to SLAAC**
+**if your LXC Container boots only in about 4-5 mins -> switch IPv6 from DHCP to SLAAC**  
 
 # 5. update pve <a name="update_pve"></a>  
 **DO NOT just simple apt update && apt upgrade -y**  
